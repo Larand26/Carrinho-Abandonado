@@ -1,0 +1,48 @@
+# Arquivo .gitignore principal
+# Comentários em português explicam por que cada entrada existe.
+
+# Dependências instaladas pelo gerenciador de pacotes (não devem ser versionadas)
+node_modules/
+
+# Logs de execução e depuração
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Pastas de build / distribuição (artefatos gerados)
+dist/
+build/
+out/
+
+# Pastas e arquivos de cobertura de testes
+coverage/
+
+# Arquivos de ambiente que podem conter segredos (não comitar)
+.env
+.env.*.local
+.env.local
+
+# Arquivos específicos de IDE/editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+
+# Arquivos temporários do sistema operacional
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# Cache de ferramentas/bundlers
+.cache/
+.sass-cache/
+
+# Arquivos gerados pelo TypeScript incremental build
+*.tsbuildinfo
+
+# Outras pastas/arquivos que podem conter dados sensíveis ou binários grandes
+/.env.local
+/.venv/
+/.pytest_cache/
