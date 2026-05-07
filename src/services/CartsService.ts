@@ -72,6 +72,25 @@ abstract class CartsService {
       };
     }
   }
+
+  static async getCartsFromDatabase(carts: ICarts[]): Promise<IResponse> {
+    try {
+      const query = "SELECT * FROM carts WHERE cart_id IN (?)";
+
+      return {
+        success: true,
+        message: "Carts fetched successfully from database",
+        data: carts as ICarts[],
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: "Error fetching carts from database",
+        data: [],
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
+    }
+  }
 }
 
 export default CartsService;

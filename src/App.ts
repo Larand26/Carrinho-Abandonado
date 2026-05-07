@@ -13,11 +13,20 @@ class App {
 
     return cartsResponse.data as ICarts[];
   }
+
+  async getCartsFromDatabase(): Promise<ICarts[]> {
+    return [];
+  }
+
   async start() {
     // Pega os carrinhos da api
     const apiCarts = await this.getCartsMagento();
     logger.info(`Total de carrinhos encontrados na API: ${apiCarts.length}`);
     // Pega os carrinhos do banco de dados
+    const dbCarts = await this.getCartsFromDatabase();
+    logger.info(
+      `Total de carrinhos encontrados no banco de dados: ${dbCarts.length}`,
+    );
     // Filtra apenas os carrinhos que não estão no banco de dados
     // Salva os carrinhos no banco de dados
     // Avisa os vendedores que tem um carrinho novo para ser processado
