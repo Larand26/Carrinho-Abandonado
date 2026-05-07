@@ -24,6 +24,11 @@ class App {
     return cartsResponse.data as ICarts[];
   }
 
+  filterNewCarts(apiCarts: ICarts[], dbCarts: ICarts[]): ICarts[] {
+    const dbCartIds = new Set(dbCarts.map((c) => c.cart_id));
+    return apiCarts.filter((cart) => !dbCartIds.has(cart.cart_id));
+  }
+
   async start() {
     // Pega os carrinhos da api
     const apiCarts = await this.getCartsMagento();
@@ -34,6 +39,8 @@ class App {
       `Total de carrinhos encontrados no banco de dados: ${dbCarts.length}`,
     );
     // Filtra apenas os carrinhos que não estão no banco de dados
+    const newCarts = this.filterNewCarts(apiCarts, dbCarts);
+    logger.info(`Total de carrinhos novos para processar: ${newCarts.length}`);
     // Salva os carrinhos no banco de dados
     // Avisa os vendedores que tem um carrinho novo para ser processado
   }
