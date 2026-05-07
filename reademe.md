@@ -36,10 +36,6 @@ O serviço opera de forma desacoplada do core do Magento para garantir performan
 Crie um arquivo `.env` na raiz do projeto seguindo o modelo:
 
 ```env
-# Server Config
-PORT=3000
-NODE_ENV=production
-
 # Magento 2 Integration
 MAGENTO_BASE_URL=[https://sualoja.com.br](https://sualoja.com.br)
 MAGENTO_ACCESS_TOKEN=seu_token_de_integracao_aqui

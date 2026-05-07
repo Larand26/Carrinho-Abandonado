@@ -1,6 +1,7 @@
 export interface ICarts {
   cart_id: number;
   customer_id: number;
+  customer_name: string;
   customer_cnpj: string;
   updated_at: Date;
 }
