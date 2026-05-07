@@ -14,8 +14,14 @@ class App {
     return cartsResponse.data as ICarts[];
   }
 
-  async getCartsFromDatabase(): Promise<ICarts[]> {
-    return [];
+  async getCartsFromDatabase(carts: ICarts[]): Promise<ICarts[]> {
+    const cartsResponse = await CartsController.getCartsFromDatabase(carts);
+    if (!cartsResponse.success) {
+      logger.error(cartsResponse.message);
+      return [];
+    }
+
+    return cartsResponse.data as ICarts[];
   }
 
   async start() {
@@ -23,7 +29,7 @@ class App {
     const apiCarts = await this.getCartsMagento();
     logger.info(`Total de carrinhos encontrados na API: ${apiCarts.length}`);
     // Pega os carrinhos do banco de dados
-    const dbCarts = await this.getCartsFromDatabase();
+    const dbCarts = await this.getCartsFromDatabase(apiCarts);
     logger.info(
       `Total de carrinhos encontrados no banco de dados: ${dbCarts.length}`,
     );

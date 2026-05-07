@@ -3,6 +3,8 @@ import type { ICarts, IResponse } from "../interfaces/interfaces.js";
 import axios from "axios";
 import { magentoConfig } from "../config/magentoConfig.js";
 
+import MySql from "../db/MySql.js";
+
 abstract class CartsService {
   static async getCartsMagento(): Promise<IResponse> {
     try {
@@ -75,12 +77,15 @@ abstract class CartsService {
 
   static async getCartsFromDatabase(carts: ICarts[]): Promise<IResponse> {
     try {
-      const query = "SELECT * FROM carts WHERE cart_id IN (?)";
+      const cartIds = carts.map((c) => c.cart_id);
+      const placeholders = cartIds.map(() => "?").join(", ");
+      const query = `SELECT * FROM carts WHERE cart_id IN (${placeholders})`;
+      const [results] = await MySql.query(query, cartIds);
 
       return {
         success: true,
         message: "Carts fetched successfully from database",
-        data: carts as ICarts[],
+        data: results as ICarts[],
       };
     } catch (error) {
       return {
