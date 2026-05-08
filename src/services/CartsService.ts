@@ -2,6 +2,7 @@ import type { ICarts, IResponse } from "../interfaces/interfaces.js";
 
 import axios from "axios";
 import { magentoConfig } from "../config/magentoConfig.js";
+import { whatsappConfig } from "../config/whatsappConfig.js";
 
 import MySql from "../db/MySql.js";
 
@@ -134,7 +135,7 @@ abstract class CartsService {
     try {
       // Falsa lógica para atribuir um vendedor a cada carrinho
       carts.map((cart) => {
-        cart.seller_id = 5536;
+        cart.seller_telphone = 5511959077823; // Telefone do vendedor responsável pelo carrinho (exemplo fixo)
       });
 
       return {
@@ -146,6 +147,66 @@ abstract class CartsService {
       return {
         success: false,
         message: "Error fetching seller for cart",
+        data: null,
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
+    }
+  }
+
+  static async notifySeller(cart: ICarts): Promise<IResponse> {
+    try {
+      const body = {
+        messaging_product: "whatsapp",
+        recipient_type: "individual",
+        to: cart.seller_telphone?.toString() || "",
+        type: "template",
+        template: {
+          name: "atendimento",
+          language: {
+            code: "en_US",
+          },
+          components: [
+            {
+              type: "body",
+              parameters: [
+                { type: "text", text: cart.customer_name },
+                { type: "text", text: "teste@email.com" },
+                {
+                  type: "text",
+                  text:
+                    cart.customer_cnpj != null
+                      ? cart.customer_cnpj
+                      : "Não possui um CNPJ",
+                },
+                {
+                  type: "text",
+                  text: "O seu cliente abandonou o carrinho Entre em contato com ele para obter mais informações",
+                },
+              ],
+            },
+          ],
+        },
+      };
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${whatsappConfig.apiToken}`,
+      };
+
+      const response = await axios.post(whatsappConfig.apiUrl, body, {
+        headers,
+      });
+
+      console.log(response.data);
+
+      return {
+        success: true,
+        message: `Seller notified successfully for cart ${cart.cart_id}`,
+        data: null,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: "Error notifying seller",
         data: null,
         error: error instanceof Error ? error.message : "Unknown error",
       };

@@ -61,6 +61,17 @@ class App {
     return sellerResponse.data as ICarts[];
   }
 
+  async notifySellers(carts: ICarts[]): Promise<void> {
+    for (const cart of carts) {
+      const response = await CartsController.notifySeller(cart);
+      logger.info(`Notification for cart ${cart.cart_id}: ${response.message}`);
+      if (!response.success) {
+        logger.error(`Failed to notify seller for cart ${cart.cart_id}`);
+        console.error(response.error);
+      }
+    }
+  }
+
   async start() {
     // Pega os carrinhos da api
     const apiCarts = await this.getCartsMagento();
@@ -82,11 +93,12 @@ class App {
       `Total de carrinhos salvos no banco de dados: ${saveResponse.length}`,
     );
     // Pega o vendedor responsável por cada carrinho
-    const getSellerResponse = await this.getSellerByCart(cartsToProcess);
+    const cartsWithSeller = await this.getSellerByCart(cartsToProcess);
     logger.info(
-      `Total de carrinhos com vendedor atribuído: ${getSellerResponse.length}`,
+      `Total de carrinhos com vendedor atribuído: ${cartsWithSeller.length}`,
     );
     // Avisa os vendedores que tem um carrinho novo para ser processado
+    const notifyResponse = await this.notifySellers(cartsWithSeller);
   }
 }
 

@@ -44,5 +44,7 @@ MAGENTO_ACCESS_TOKEN=seu_token_de_integracao_aqui
 CART_ABANDON_THRESHOLD_MINUTES=30
 CHECK_INTERVAL_CRON="*/15 * * * *"
 
-# Notification Providers (Exemplo: WhatsApp/Twilio)
+# Notification Providers (Exemplo: WhatsApp)
+WHATSAPP_API_URL=
+WHATSAPP_API_TOKEN=
 ```

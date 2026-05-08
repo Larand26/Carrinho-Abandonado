@@ -54,6 +54,19 @@ abstract class CartsController {
       };
     }
   }
+
+  static async notifySeller(cart: ICarts): Promise<IResponse> {
+    try {
+      return await CartsService.notifySeller(cart);
+    } catch (error) {
+      return {
+        success: false,
+        message: "Error notifying seller",
+        data: null,
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
+    }
+  }
 }
 
 export default CartsController;
