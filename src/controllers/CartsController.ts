@@ -41,6 +41,19 @@ abstract class CartsController {
       };
     }
   }
+
+  static async getSellerByCart(carts: ICarts[]): Promise<IResponse> {
+    try {
+      return await CartsService.getSellerByCart(carts);
+    } catch (error) {
+      return {
+        success: false,
+        message: "Error fetching seller for cart",
+        data: null,
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
+    }
+  }
 }
 
 export default CartsController;

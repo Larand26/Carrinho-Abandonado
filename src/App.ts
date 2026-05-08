@@ -50,6 +50,17 @@ class App {
     return saveResponse.data as ICarts[];
   }
 
+  async getSellerByCart(carts: ICarts[]): Promise<ICarts[]> {
+    const sellerResponse = await CartsController.getSellerByCart(carts);
+    if (!sellerResponse.success) {
+      logger.error(sellerResponse.message);
+      console.error(sellerResponse.error);
+      return [];
+    }
+
+    return sellerResponse.data as ICarts[];
+  }
+
   async start() {
     // Pega os carrinhos da api
     const apiCarts = await this.getCartsMagento();
@@ -69,6 +80,11 @@ class App {
     const saveResponse = await this.saveCartsToDatabase(cartsToProcess);
     logger.info(
       `Total de carrinhos salvos no banco de dados: ${saveResponse.length}`,
+    );
+    // Pega o vendedor responsável por cada carrinho
+    const getSellerResponse = await this.getSellerByCart(cartsToProcess);
+    logger.info(
+      `Total de carrinhos com vendedor atribuído: ${getSellerResponse.length}`,
     );
     // Avisa os vendedores que tem um carrinho novo para ser processado
   }

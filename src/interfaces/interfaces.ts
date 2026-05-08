@@ -4,6 +4,7 @@ export interface ICarts {
   customer_name: string;
   customer_cnpj: string;
   updated_at: Date;
+  seller_id?: number;
 }
 
 export interface IResponse {

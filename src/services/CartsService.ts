@@ -129,6 +129,28 @@ abstract class CartsService {
       };
     }
   }
+
+  static async getSellerByCart(carts: ICarts[]): Promise<IResponse> {
+    try {
+      // Falsa lógica para atribuir um vendedor a cada carrinho
+      carts.map((cart) => {
+        cart.seller_id = 5536;
+      });
+
+      return {
+        success: true,
+        message: "Seller fetched successfully for cart",
+        data: carts as ICarts[],
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: "Error fetching seller for cart",
+        data: null,
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
+    }
+  }
 }
 
 export default CartsService;
