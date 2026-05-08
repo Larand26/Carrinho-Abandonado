@@ -56,6 +56,7 @@ abstract class CartsService {
             cart_id: cart.id,
             customer_id: cart.customer?.id,
             customer_name: cart.customer?.firstname || "Anônimo",
+            customer_telphone: cart.addresses?.telephone || "Sem telefone",
             updated_at: updatedAt,
             customer_cnpj: cart.customer.taxvat || "Sem CNPJ",
           };

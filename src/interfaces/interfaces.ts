@@ -3,6 +3,7 @@ export interface ICarts {
   customer_id: number;
   customer_name: string;
   customer_cnpj: string;
+  customer_telphone: string;
   updated_at: Date;
   seller_telphone?: number;
 }
