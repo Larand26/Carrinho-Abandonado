@@ -40,6 +40,16 @@ class App {
     });
   }
 
+  async saveCartsToDatabase(carts: ICarts[]): Promise<ICarts[]> {
+    const saveResponse = await CartsController.saveCartsToDatabase(carts);
+    if (!saveResponse.success) {
+      logger.error(saveResponse.message);
+      console.error(saveResponse.error);
+      return [];
+    }
+    return saveResponse.data as ICarts[];
+  }
+
   async start() {
     // Pega os carrinhos da api
     const apiCarts = await this.getCartsMagento();
@@ -56,6 +66,10 @@ class App {
     const cartsToProcess = this.filterCartsToProcess(newCarts);
     logger.info(`Total de carrinhos para processar: ${cartsToProcess.length}`);
     // Salva os carrinhos no banco de dados
+    const saveResponse = await this.saveCartsToDatabase(cartsToProcess);
+    logger.info(
+      `Total de carrinhos salvos no banco de dados: ${saveResponse.length}`,
+    );
     // Avisa os vendedores que tem um carrinho novo para ser processado
   }
 }

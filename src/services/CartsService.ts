@@ -96,6 +96,39 @@ abstract class CartsService {
       };
     }
   }
+
+  static async saveCartsToDatabase(carts: ICarts[]): Promise<IResponse> {
+    try {
+      if (carts.length === 0) {
+        return {
+          success: true,
+          message: "No carts to save",
+          data: [],
+        };
+      }
+      const values = carts.map((cart) => [
+        cart.cart_id,
+        cart.customer_id,
+        cart.customer_name,
+        cart.customer_cnpj,
+        cart.updated_at,
+      ]);
+      const query = `INSERT INTO carts (cart_id, customer_id, customer_name, customer_cnpj, updated_at) VALUES ? ON DUPLICATE KEY UPDATE updated_at = VALUES(updated_at)`;
+      const [result] = await MySql.query(query, [values]);
+      return {
+        success: true,
+        message: "Carts saved successfully to database",
+        data: carts,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: "Error saving carts to database",
+        data: [],
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
+    }
+  }
 }
 
 export default CartsService;

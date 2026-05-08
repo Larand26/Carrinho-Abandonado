@@ -28,6 +28,19 @@ abstract class CartsController {
       };
     }
   }
+
+  static async saveCartsToDatabase(carts: ICarts[]): Promise<IResponse> {
+    try {
+      return await CartsService.saveCartsToDatabase(carts);
+    } catch (error) {
+      return {
+        success: false,
+        message: "Error saving carts to database",
+        data: [],
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
+    }
+  }
 }
 
 export default CartsController;

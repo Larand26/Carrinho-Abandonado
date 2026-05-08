@@ -10,8 +10,7 @@ class MySql {
   }
 
   async query(sql: string, values?: any[]) {
-    // O pool gerencia as conexões e reconnects automaticamente
-    return await this.pool.execute(sql, values);
+    return await this.pool.query(sql, values);
   }
 }
 
