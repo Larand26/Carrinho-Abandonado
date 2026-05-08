@@ -52,11 +52,13 @@ abstract class CartsService {
           );
           updatedAt.setUTCHours(updatedAt.getUTCHours() - 3);
 
+          console.log(cart.customer.addresses[0].telephone);
           return {
             cart_id: cart.id,
             customer_id: cart.customer?.id,
             customer_name: cart.customer?.firstname || "Anônimo",
-            customer_telphone: cart.addresses?.telephone || "Sem telefone",
+            customer_telphone:
+              cart.customer.addresses[0]?.telephone || "Sem telefone",
             updated_at: updatedAt,
             customer_cnpj: cart.customer.taxvat || "Sem CNPJ",
           };
@@ -162,26 +164,19 @@ abstract class CartsService {
         to: cart.seller_telphone?.toString() || "",
         type: "template",
         template: {
-          name: "atendimento",
+          name: "carrinho_abandonado",
           language: {
-            code: "en_US",
+            code: "en",
           },
           components: [
             {
               type: "body",
               parameters: [
                 { type: "text", text: cart.customer_name },
-                { type: "text", text: "teste@email.com" },
+                { type: "text", text: cart.customer_cnpj },
                 {
                   type: "text",
-                  text:
-                    cart.customer_cnpj != null
-                      ? cart.customer_cnpj
-                      : "Não possui um CNPJ",
-                },
-                {
-                  type: "text",
-                  text: "O seu cliente abandonou o carrinho Entre em contato com ele para obter mais informações",
+                  text: cart.customer_telphone,
                 },
               ],
             },
@@ -196,8 +191,6 @@ abstract class CartsService {
       const response = await axios.post(whatsappConfig.apiUrl, body, {
         headers,
       });
-
-      console.log(response.data);
 
       return {
         success: true,
