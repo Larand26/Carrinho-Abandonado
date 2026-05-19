@@ -206,6 +206,25 @@ abstract class CartsService {
       };
     }
   }
+
+  static async clearDatabase(): Promise<IResponse> {
+    try {
+      const query = `DELETE FROM carts`;
+      await MySql.query(query);
+      return {
+        success: true,
+        message: "Database cleared successfully",
+        data: null,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: "Error clearing database",
+        data: null,
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
+    }
+  }
 }
 
 export default CartsService;

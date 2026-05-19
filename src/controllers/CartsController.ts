@@ -67,6 +67,19 @@ abstract class CartsController {
       };
     }
   }
+
+  static async clearDatabase(): Promise<IResponse> {
+    try {
+      return await CartsService.clearDatabase();
+    } catch (error) {
+      return {
+        success: false,
+        message: "Error clearing database",
+        data: null,
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
+    }
+  }
 }
 
 export default CartsController;

@@ -72,6 +72,14 @@ class App {
     }
   }
 
+  async clearDatabase(): Promise<void> {
+    const response = await CartsController.clearDatabase();
+    if (!response.success) {
+      logger.error("Failed to clear database");
+      console.error(response.error);
+    }
+  }
+
   async start() {
     // Pega os carrinhos da api
     const apiCarts = await this.getCartsMagento();
