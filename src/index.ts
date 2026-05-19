@@ -9,3 +9,5 @@ nodeCron.schedule("0 10,12,14,16,18 * * *", async () => {
 nodeCron.schedule("0 21 * * *", async () => {
   await app.clearDatabase();
 });
+
+app.start();

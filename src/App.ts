@@ -84,6 +84,12 @@ class App {
     // Pega os carrinhos da api
     const apiCarts = await this.getCartsMagento();
     logger.info(`Total de carrinhos encontrados na API: ${apiCarts.length}`);
+
+    if (apiCarts.length === 0) {
+      logger.info("Nenhum carrinho encontrado na API. Encerrando processo.");
+      return;
+    }
+
     // Pega os carrinhos do banco de dados
     const dbCarts = await this.getCartsFromDatabase(apiCarts);
     logger.info(
@@ -95,6 +101,12 @@ class App {
     // filtra carrinhos que tem o tempo X para serem processados
     const cartsToProcess = this.filterCartsToProcess(newCarts);
     logger.info(`Total de carrinhos para processar: ${cartsToProcess.length}`);
+
+    if (cartsToProcess.length === 0) {
+      logger.info("Nenhum carrinho para processar. Encerrando processo.");
+      return;
+    }
+
     // Salva os carrinhos no banco de dados
     const saveResponse = await this.saveCartsToDatabase(cartsToProcess);
     logger.info(
