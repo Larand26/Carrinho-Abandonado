@@ -19,5 +19,8 @@
     "dotenv": "^17.4.2",
     "mysql2": "^3.22.3",
     "node-cron": "^4.2.1"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
   }
 }
