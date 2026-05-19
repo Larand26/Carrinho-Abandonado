@@ -138,7 +138,7 @@ abstract class CartsService {
     try {
       // Falsa lógica para atribuir um vendedor a cada carrinho
       carts.map((cart) => {
-        cart.seller_telphone = 5511959077823; // Telefone do vendedor responsável pelo carrinho (exemplo fixo)
+        cart.seller_telphone = 5511971528746; // Telefone do vendedor responsável pelo carrinho (exemplo fixo)
       });
 
       return {
