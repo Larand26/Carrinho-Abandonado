@@ -3,8 +3,10 @@ import type { ICarts, IResponse } from "../interfaces/interfaces.js";
 import axios from "axios";
 import { magentoConfig } from "../config/magentoConfig.js";
 import { whatsappConfig } from "../config/whatsappConfig.js";
+import { apiConfig } from "../config/apiConfig.js";
 
 import MySql from "../db/MySql.js";
+import Utils from "../utils/Utils.js";
 
 abstract class CartsService {
   static async getCartsMagento(): Promise<IResponse> {
@@ -52,7 +54,6 @@ abstract class CartsService {
           );
           updatedAt.setUTCHours(updatedAt.getUTCHours() - 3);
 
-          console.log(cart.customer.addresses[0].telephone);
           return {
             cart_id: cart.id,
             customer_id: cart.customer?.id,
@@ -134,12 +135,57 @@ abstract class CartsService {
     }
   }
 
+  static async getSellerIdByCNPJ(cnpj: string): Promise<number> {
+    interface IClientResponseItem {
+      client_id: number;
+      corporate_name: string;
+      client_cnpj: string;
+      salesperson_id: number;
+    }
+
+    const cleanedCnpj = Utils.cleanCNPJ(cnpj);
+
+    if (!cleanedCnpj) {
+      return 0;
+    }
+
+    try {
+      const response = await axios.get<
+        IClientResponseItem | IClientResponseItem[]
+      >(`${apiConfig.apiUrl}/api/get-client/${cleanedCnpj}`, {
+        headers: {
+          Authorization: `Bearer ${apiConfig.apiToken}`,
+        },
+      });
+
+      if (response.status !== 200) {
+        return 0;
+      }
+
+      const clientData = Array.isArray(response.data)
+        ? response.data[0]
+        : response.data;
+
+      return clientData?.salesperson_id ?? 0;
+    } catch {
+      return 0;
+    }
+  }
+
   static async getSellerByCart(carts: ICarts[]): Promise<IResponse> {
     try {
-      // Falsa lógica para atribuir um vendedor a cada carrinho
-      carts.map((cart) => {
-        cart.seller_telphone = 5511971528746; // Telefone do vendedor responsável pelo carrinho (exemplo fixo)
-      });
+      // Pega o Id dos Vendedores
+      await Promise.all(
+        carts.map(async (cart) => {
+          const sellerId = await CartsService.getSellerIdByCNPJ(
+            cart.customer_cnpj,
+          );
+          cart.seller_id = sellerId;
+        }),
+      );
+      console.log("carts with sellers:", carts);
+
+      // Pega o telefone do vendedor
 
       return {
         success: true,

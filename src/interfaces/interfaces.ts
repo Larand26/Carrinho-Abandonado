@@ -5,6 +5,7 @@ export interface ICarts {
   customer_cnpj: string;
   customer_telphone: string;
   updated_at: Date;
+  seller_id?: number;
   seller_telphone?: number;
 }
 
