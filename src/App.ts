@@ -108,16 +108,16 @@ class App {
     }
 
     // Salva os carrinhos no banco de dados
-    // const saveResponse = await this.saveCartsToDatabase(cartsToProcess);
-    // logger.info(
-    //   `Total de carrinhos salvos no banco de dados: ${saveResponse.length}`,
-    // );
+    const saveResponse = await this.saveCartsToDatabase(cartsToProcess);
+    logger.info(
+      `Total de carrinhos salvos no banco de dados: ${saveResponse.length}`,
+    );
     // Pega o vendedor responsável por cada carrinho
     const cartsWithSeller = await this.getSellerByCart(cartsToProcess);
     logger.info(
       `Total de carrinhos com vendedor atribuído: ${cartsWithSeller.length}`,
     );
-    return;
+
     // Avisa os vendedores que tem um carrinho novo para ser processado
     const notifyResponse = await this.notifySellers(cartsWithSeller);
   }
