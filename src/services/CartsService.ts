@@ -135,7 +135,7 @@ abstract class CartsService {
     }
   }
 
-  static async getSellerIdByCNPJ(cnpj: string): Promise<number> {
+  private static async getSellerIdByCNPJ(cnpj: string): Promise<number> {
     interface IClientResponseItem {
       client_id: number;
       corporate_name: string;
@@ -159,14 +159,28 @@ abstract class CartsService {
       });
 
       if (response.status !== 200) {
-        return 0;
+        return 5536;
       }
 
       const clientData = Array.isArray(response.data)
         ? response.data[0]
         : response.data;
 
-      return clientData?.salesperson_id ?? 0;
+      return clientData?.salesperson_id ?? 5536;
+    } catch {
+      return 5536;
+    }
+  }
+
+  private static async getSellerPhoneById(sellerId: number): Promise<number> {
+    const query = `SELECT cellphone FROM celphone_seller WHERE id_seller = ?`;
+    try {
+      const [results] = (await MySql.query(query, [sellerId])) as [
+        Array<{ cellphone?: string | number }>,
+        unknown,
+      ];
+      const phone = results[0]?.cellphone;
+      return phone ? Number(phone) : 0;
     } catch {
       return 0;
     }
@@ -183,9 +197,19 @@ abstract class CartsService {
           cart.seller_id = sellerId;
         }),
       );
-      console.log("carts with sellers:", carts);
 
       // Pega o telefone do vendedor
+
+      await Promise.all(
+        carts.map(async (cart) => {
+          if (cart.seller_id) {
+            const sellerPhone = await CartsService.getSellerPhoneById(
+              cart.seller_id,
+            );
+            cart.seller_telphone = sellerPhone;
+          }
+        }),
+      );
 
       return {
         success: true,
