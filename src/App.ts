@@ -64,7 +64,9 @@ class App {
   async notifySellers(carts: ICarts[]): Promise<void> {
     for (const cart of carts) {
       const response = await CartsController.notifySeller(cart);
-      logger.info(`Notification for cart ${cart.cart_id}: ${response.message}`);
+      logger.info(
+        `Notification for cart ${cart.cart_id}: ${response.message} para vendedor ${cart.seller_id}`,
+      );
       if (!response.success) {
         logger.error(`Failed to notify seller for cart ${cart.cart_id}`);
         console.error(response.error);
