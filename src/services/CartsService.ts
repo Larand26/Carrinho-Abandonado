@@ -233,7 +233,22 @@ abstract class CartsService {
         Array<{ cellphone?: string | number }>,
         unknown,
       ];
-      const phone = results[0]?.cellphone;
+
+      let phone = results[0]?.cellphone;
+
+      if (!phone && sellerId !== 5536) {
+        logger.warning(
+          `getSellerPhoneById: telefone nao encontrado para ${sellerId}, tentando fallback 5536`,
+        );
+
+        const [fallbackResults] = (await MySql.query(query, [5536])) as [
+          Array<{ cellphone?: string | number }>,
+          unknown,
+        ];
+
+        phone = fallbackResults[0]?.cellphone;
+      }
+
       logger.success(
         `getSellerPhoneById: telefone retornado ${phone ?? "nenhum"}`,
       );
