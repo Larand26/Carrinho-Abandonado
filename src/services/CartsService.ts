@@ -9,6 +9,8 @@ import MySql from "../db/MySql.js";
 import Utils from "../utils/Utils.js";
 import { logger } from "../utils/logger.js";
 
+import ErrorEmail from "../errors/Error.js";
+
 abstract class CartsService {
   static async getCartsMagento(): Promise<IResponse> {
     try {
@@ -82,6 +84,11 @@ abstract class CartsService {
           error instanceof Error ? error.message : "Unknown error"
         }`,
       );
+      const errorEmail = new ErrorEmail(
+        "Erro ao buscar carrinhos no Magento",
+        error instanceof Error ? error.message : "Unknown error",
+      );
+      errorEmail.sendError();
       return {
         success: false,
         message: "Error fetching carts from Magento",
@@ -114,6 +121,11 @@ abstract class CartsService {
           error instanceof Error ? error.message : "Unknown error"
         }`,
       );
+      const errorEmail = new ErrorEmail(
+        "Erro ao buscar carrinhos no banco de dados",
+        error instanceof Error ? error.message : "Unknown error",
+      );
+      errorEmail.sendError();
       return {
         success: false,
         message: "Error fetching carts from database",
@@ -161,6 +173,11 @@ abstract class CartsService {
           error instanceof Error ? error.message : "Unknown error"
         }`,
       );
+      const errorEmail = new ErrorEmail(
+        "Erro ao salvar carrinhos no banco de dados",
+        error instanceof Error ? error.message : "Unknown error",
+      );
+      errorEmail.sendError();
       return {
         success: false,
         message: "Error saving carts to database",
@@ -361,6 +378,11 @@ abstract class CartsService {
           error instanceof Error ? error.message : "Unknown error"
         }`,
       );
+      const errorEmail = new ErrorEmail(
+        "Erro ao notificar vendedor",
+        error instanceof Error ? error.message : "Unknown error",
+      );
+      errorEmail.sendError();
       return {
         success: false,
         message: "Error notifying seller",
@@ -387,6 +409,11 @@ abstract class CartsService {
           error instanceof Error ? error.message : "Unknown error"
         }`,
       );
+      const errorEmail = new ErrorEmail(
+        "Erro ao limpar banco de dados",
+        error instanceof Error ? error.message : "Unknown error",
+      );
+      errorEmail.sendError();
       return {
         success: false,
         message: "Error clearing database",

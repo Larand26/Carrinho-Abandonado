@@ -2,6 +2,7 @@ import type { ICarts } from "./interfaces/interfaces.js";
 import { logger } from "./utils/logger.js";
 import CartsController from "./controllers/CartsController.js";
 import { appConfig } from "./config/appConfig.js";
+import Error from "./errors/Error.js";
 
 class App {
   async getCartsMagento(): Promise<ICarts[]> {
@@ -9,6 +10,11 @@ class App {
 
     if (!cartsResponse.success) {
       logger.error(cartsResponse.message);
+      const error = new Error(
+        "Erro ao buscar carrinhos na API Magento",
+        cartsResponse.error,
+      );
+      error.sendError();
       return [];
     }
 
@@ -19,6 +25,11 @@ class App {
     const cartsResponse = await CartsController.getCartsFromDatabase(carts);
     if (!cartsResponse.success) {
       logger.error(cartsResponse.message);
+      const error = new Error(
+        "Erro ao buscar carrinhos no banco de dados",
+        cartsResponse.error,
+      );
+      error.sendError();
       return [];
     }
 
@@ -43,8 +54,11 @@ class App {
   async saveCartsToDatabase(carts: ICarts[]): Promise<ICarts[]> {
     const saveResponse = await CartsController.saveCartsToDatabase(carts);
     if (!saveResponse.success) {
-      logger.error(saveResponse.message);
-      console.error(saveResponse.error);
+      const error = new Error(
+        "Erro ao salvar carrinhos no banco de dados",
+        saveResponse.error,
+      );
+      error.sendError();
       return [];
     }
     return saveResponse.data as ICarts[];
@@ -53,8 +67,11 @@ class App {
   async getSellerByCart(carts: ICarts[]): Promise<ICarts[]> {
     const sellerResponse = await CartsController.getSellerByCart(carts);
     if (!sellerResponse.success) {
-      logger.error(sellerResponse.message);
-      console.error(sellerResponse.error);
+      const error = new Error(
+        "Erro ao buscar vendedor para os carrinhos",
+        sellerResponse.error,
+      );
+      error.sendError();
       return [];
     }
 
@@ -69,7 +86,8 @@ class App {
       );
       if (!response.success) {
         logger.error(`Failed to notify seller for cart ${cart.cart_id}`);
-        console.error(response.error);
+        const error = new Error("Erro ao notificar vendedor", response.error);
+        error.sendError();
       }
     }
   }
@@ -78,6 +96,8 @@ class App {
     const response = await CartsController.clearDatabase();
     if (!response.success) {
       logger.error("Failed to clear database");
+      const error = new Error("Erro ao limpar banco de dados", response.error);
+      error.sendError();
       console.error(response.error);
     }
   }

@@ -1,7 +1,7 @@
 import { errorConfig } from "../config/errorConfig.js";
 import axios from "axios";
 
-class Error {
+export default class Error {
   to: string;
   subject: string;
   errorDetails: any;
