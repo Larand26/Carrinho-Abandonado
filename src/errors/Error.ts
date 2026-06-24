@@ -19,19 +19,21 @@ export default class Error {
     this.token = errorConfig.token;
   }
   sendError() {
-    const body = {
-      to: errorConfig.email,
-      subject: this.subject,
-      errorDetails: this.errorDetails,
-      html: this.html,
-      app: this.app,
-    };
+    try {
+      const body = {
+        to: errorConfig.email,
+        subject: this.subject,
+        errorDetails: this.errorDetails,
+        html: this.html,
+        app: this.app,
+      };
 
-    axios.post(this.urlApi, body, {
-      headers: {
-        Authorization: `Bearer ${this.token}`,
-        "Content-Type": "application/json",
-      },
-    });
+      axios.post(this.urlApi + "/send-email/error", body, {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (error) {}
   }
 }
