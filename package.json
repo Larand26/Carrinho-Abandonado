@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsc && node dist/index.js",
     "build": "tsc",
-    "dev": "npx tsx watch src/index.ts"
+    "dev": "npx tsx watch src/index.ts",
+    "test": "npx tsx src/test/test.ts"
   },
   "keywords": [],
   "author": "",

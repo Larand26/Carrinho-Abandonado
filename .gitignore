@@ -46,3 +46,6 @@ ehthumbs.db
 /.env.local
 /.venv/
 /.pytest_cache/
+
+# Testes
+test/
