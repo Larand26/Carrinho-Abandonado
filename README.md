@@ -37,14 +37,32 @@ Crie um arquivo `.env` na raiz do projeto seguindo o modelo:
 
 ```env
 # Magento 2 Integration
-MAGENTO_BASE_URL=[https://sualoja.com.br](https://sualoja.com.br)
-MAGENTO_ACCESS_TOKEN=seu_token_de_integracao_aqui
+# Magento API credentials and configuration
+MAGENTO_ACCESS_TOKEN=
+MAGENTO_BASE_URL=
 
-# Recovery Logic
-CART_ABANDON_THRESHOLD_MINUTES=30
-CHECK_INTERVAL_CRON="*/15 * * * *"
+# Cart abandonment settings
+CART_ABANDON_THRESHOLD_MINUTES=120
+CHECK_INTERVAL_CRON="0 10-20 * * *"
 
-# Notification Providers (Exemplo: WhatsApp)
+# MySQL database credentials
+MYSQL_HOST=
+MYSQL_USER=
+MYSQL_PASSWORD=
+MYSQL_DATABASE=
+MYSQL_PORT=
+
+# Api local server configuration
+API_HOST=
+API_PORT=
+API_TOKEN=
+
+# Whatsapp API configuration
 WHATSAPP_API_URL=
 WHATSAPP_API_TOKEN=
+
+# Error tracking configuration
+URL_ERROR_API=
+TOKEN_ERROR_API=
+EMAIL_ERROR_API=
 ```
