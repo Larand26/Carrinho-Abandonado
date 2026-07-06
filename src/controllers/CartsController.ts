@@ -11,7 +11,7 @@ abstract class CartsController {
         success: false,
         message: "Error fetching carts from Magento",
         data: [],
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: error,
       };
     }
   }
@@ -24,7 +24,7 @@ abstract class CartsController {
         success: false,
         message: "Error fetching carts from database",
         data: [],
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: error,
       };
     }
   }
@@ -37,7 +37,7 @@ abstract class CartsController {
         success: false,
         message: "Error saving carts to database",
         data: [],
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: error,
       };
     }
   }
@@ -50,7 +50,7 @@ abstract class CartsController {
         success: false,
         message: "Error fetching seller for cart",
         data: null,
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: error,
       };
     }
   }
@@ -63,7 +63,7 @@ abstract class CartsController {
         success: false,
         message: "Error notifying seller",
         data: null,
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: error,
       };
     }
   }
@@ -76,7 +76,7 @@ abstract class CartsController {
         success: false,
         message: "Error clearing database",
         data: null,
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: error,
       };
     }
   }

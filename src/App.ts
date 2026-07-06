@@ -4,11 +4,25 @@ import CartsController from "./controllers/CartsController.js";
 import { appConfig } from "./config/appConfig.js";
 import Error from "./errors/Error.js";
 
+import Log from "./log/Log.js";
+
 class App {
   async getCartsMagento(): Promise<ICarts[]> {
     const cartsResponse = await CartsController.getCartsMagento();
 
     if (!cartsResponse.success) {
+      await Log.addLog({
+        jobName: "Carrinho Abandonado",
+        runId: Date.now(),
+        environment: appConfig.mode,
+        status: "error",
+        startedAt: new Date(),
+        finishedAt: new Date(),
+        message: cartsResponse.message,
+        details: {
+          error: cartsResponse.error,
+        },
+      });
       logger.error(cartsResponse.message);
       const error = new Error(
         "Erro ao buscar carrinhos na API Magento",
@@ -17,6 +31,19 @@ class App {
       error.sendError();
       return [];
     }
+
+    await Log.addLog({
+      jobName: "Carrinho Abandonado",
+      runId: Date.now(),
+      environment: appConfig.mode,
+      status: "success",
+      startedAt: new Date(),
+      finishedAt: new Date(),
+      message: "Carrinhos buscados com sucesso na API Magento",
+      details: {
+        totalCarts: cartsResponse.data.length,
+      },
+    });
 
     return cartsResponse.data as ICarts[];
   }
@@ -29,9 +56,36 @@ class App {
         "Erro ao buscar carrinhos no banco de dados",
         cartsResponse.error,
       );
+
+      await Log.addLog({
+        jobName: "Carrinho Abandonado",
+        runId: Date.now(),
+        environment: appConfig.mode,
+        status: "error",
+        startedAt: new Date(),
+        finishedAt: new Date(),
+        message: cartsResponse.message,
+        details: {
+          error: cartsResponse.error,
+        },
+      });
+
       error.sendError();
       return [];
     }
+
+    await Log.addLog({
+      jobName: "Carrinho Abandonado",
+      runId: Date.now(),
+      environment: appConfig.mode,
+      status: "success",
+      startedAt: new Date(),
+      finishedAt: new Date(),
+      message: "Carrinhos buscados com sucesso no banco de dados",
+      details: {
+        totalCarts: cartsResponse.data.length,
+      },
+    });
 
     return cartsResponse.data as ICarts[];
   }
@@ -58,6 +112,19 @@ class App {
         "Erro ao salvar carrinhos no banco de dados",
         saveResponse.error,
       );
+      await Log.addLog({
+        jobName: "Carrinho Abandonado",
+        runId: Date.now(),
+        environment: appConfig.mode,
+        status: "error",
+        startedAt: new Date(),
+        finishedAt: new Date(),
+        message: saveResponse.message,
+        details: {
+          error: saveResponse.error,
+        },
+      });
+
       error.sendError();
       return [];
     }
@@ -71,9 +138,40 @@ class App {
         "Erro ao buscar vendedor para os carrinhos",
         sellerResponse.error,
       );
+
+      await Log.addLog({
+        jobName: "Carrinho Abandonado",
+        runId: Date.now(),
+        environment: appConfig.mode,
+        status: "error",
+        startedAt: new Date(),
+        finishedAt: new Date(),
+        message: sellerResponse.message,
+        details: {
+          error: sellerResponse.error,
+        },
+      });
+
       error.sendError();
       return [];
     }
+
+    await Log.addLog({
+      jobName: "Carrinho Abandonado",
+      runId: Date.now(),
+      environment: appConfig.mode,
+      status: "success",
+      startedAt: new Date(),
+      finishedAt: new Date(),
+      message: "Vendedores buscados com sucesso para os carrinhos",
+      details: {
+        totalCarts: sellerResponse.data.length,
+        sellers: sellerResponse.data.map((cart: ICarts) => ({
+          cart_id: cart.cart_id,
+          seller_id: cart.seller_id,
+        })),
+      },
+    });
 
     return sellerResponse.data as ICarts[];
   }
@@ -89,20 +187,64 @@ class App {
         const error = new Error("Erro ao notificar vendedor", response.error);
         error.sendError();
       }
+
+      await Log.addLog({
+        jobName: "Carrinho Abandonado",
+        runId: Date.now(),
+        environment: appConfig.mode,
+        status: "success",
+        startedAt: new Date(),
+        finishedAt: new Date(),
+        message: `Notification sent for cart ${cart.cart_id}`,
+        details: {
+          cart_id: cart.cart_id,
+          seller_id: cart.seller_id,
+          notificationResponse: response,
+        },
+      });
     }
   }
 
   async clearDatabase(): Promise<void> {
     const response = await CartsController.clearDatabase();
     if (!response.success) {
-      logger.error("Failed to clear database");
+      await Log.addLog({
+        jobName: "Carrinho Abandonado",
+        runId: Date.now(),
+        environment: appConfig.mode,
+        status: "error",
+        startedAt: new Date(),
+        finishedAt: new Date(),
+        message: "Failed to clear database",
+        details: {
+          error: response.error,
+        },
+      });
       const error = new Error("Erro ao limpar banco de dados", response.error);
       error.sendError();
       console.error(response.error);
+      return;
     }
+
+    await Log.addLog({
+      jobName: "Carrinho Abandonado",
+      runId: Date.now(),
+      environment: appConfig.mode,
+      status: "success",
+      startedAt: new Date(),
+      finishedAt: new Date(),
+      message: "Banco de dados limpo com sucesso",
+    });
   }
 
   async start() {
+    await Log.addLog({
+      jobName: "Carrinho Abandonado",
+      runId: Date.now(),
+      environment: appConfig.mode,
+      status: "running",
+      startedAt: new Date(),
+    });
     // Pega os carrinhos da api
     const apiCarts = await this.getCartsMagento();
     logger.info(`Total de carrinhos encontrados na API: ${apiCarts.length}`);
@@ -141,7 +283,25 @@ class App {
     );
 
     // Avisa os vendedores que tem um carrinho novo para ser processado
-    const notifyResponse = await this.notifySellers(cartsWithSeller);
+    await this.notifySellers(cartsWithSeller);
+
+    await Log.addLog({
+      jobName: "Carrinho Abandonado",
+      runId: Date.now(),
+      environment: appConfig.mode,
+      status: "success",
+      startedAt: new Date(),
+      finishedAt: new Date(),
+      message: "Processamento concluído com sucesso",
+      details: {
+        apiCarts: apiCarts.length,
+        dbCarts: dbCarts.length,
+        newCarts: newCarts.length,
+        cartsToProcess: cartsToProcess.length,
+        cartsSaved: saveResponse.length,
+        cartsWithSeller: cartsWithSeller.length,
+      },
+    });
   }
 }
 
