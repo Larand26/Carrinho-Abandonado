@@ -66,3 +66,17 @@ URL_ERROR_API=
 TOKEN_ERROR_API=
 EMAIL_ERROR_API=
 ```
+
+## 🚀 Execução com PM2
+
+Para subir a automação em produção com PM2:
+
+```bash
+npm run pm2:start
+```
+
+Para recarregar após um deploy:
+
+```bash
+npm run pm2:reload
+```
