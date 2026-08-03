@@ -15,6 +15,10 @@ interface iLog {
 
 export default class Log {
   static async addLog(log: iLog) {
+    if (!loggerConfig.activeLogger) {
+      console.log("Logger is inactive. Log not sent.");
+      return;
+    }
     try {
       const response = await axios.post(
         `${loggerConfig.loggerUrl}/rest/v1/add-log`,
