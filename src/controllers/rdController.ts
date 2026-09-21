@@ -42,4 +42,29 @@ export default class RdController {
       };
     }
   }
+
+  static async getDealByOrganizationId(
+    organizationId: string,
+    token: string,
+  ): Promise<IResponse> {
+    try {
+      const response = await RdService.getDealByOrganizationId(
+        organizationId,
+        token,
+      );
+      return {
+        success: true,
+        message: "Deal fetched successfully",
+        data: response,
+        error: null,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: "Error fetching deal by organization ID",
+        data: null,
+        error: error,
+      };
+    }
+  }
 }

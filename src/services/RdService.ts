@@ -95,7 +95,6 @@ export default class RdService {
     token: string,
   ): Promise<string | null> {
     try {
-      console.log(cnpj, token);
       const response = await axios.get(
         `${rdConfig.apiHost}/crm/v2/organizations`,
         {
@@ -115,6 +114,31 @@ export default class RdService {
       return id;
     } catch (error) {
       console.error("Error fetching organization by CNPJ:", error);
+      return null;
+    }
+  }
+
+  static async getDealByOrganizationId(
+    organizationId: string,
+    token: string,
+  ): Promise<string | null> {
+    try {
+      const response = await axios.get(`${rdConfig.apiHost}/crm/v2/deals`, {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          "page[number]": 1,
+          "page[size]": 1,
+          filter: `organization_id:"${organizationId}"`,
+        },
+      });
+      const id = response.data.data[0]?.id;
+      if (!id) return null;
+      return id;
+    } catch (error) {
+      console.error("Error fetching deal by organization ID:", error);
       return null;
     }
   }

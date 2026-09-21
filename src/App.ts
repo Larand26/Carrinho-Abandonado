@@ -226,13 +226,20 @@ class App {
         cart.customer_cnpj,
         token,
       );
-      console.log(organizationResponse.data);
+
       // Se a organização não existir passa para a próxima
-      if (!organizationResponse.success) {
+      if (!organizationResponse.success || !organizationResponse.data) {
         continue;
       }
 
-      // Se a organização existir salva o carrinho na RdStation
+      // Se a organização existir
+      // Pega a negociação pelo id da organização
+      const dealResponse = await RdController.getDealByOrganizationId(
+        organizationResponse.data,
+        token,
+      );
+
+      // Atualiza a negociação para carrinho abandonado
     }
   }
 
