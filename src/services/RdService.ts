@@ -2,6 +2,8 @@ import MySql from "../db/MySql.js";
 import axios from "axios";
 import rdConfig from "../config/rdConfig.js";
 
+import Utils from "../utils/Utils.js";
+
 import type { IResponse } from "../interfaces/interfaces.js";
 
 export default class RdService {
@@ -85,6 +87,35 @@ export default class RdService {
     } catch (error) {
       console.error("Error fetching RD Access Token:", error);
       throw error;
+    }
+  }
+
+  static async getOrganizationByCnpj(
+    cnpj: string,
+    token: string,
+  ): Promise<string | null> {
+    try {
+      console.log(cnpj, token);
+      const response = await axios.get(
+        `${rdConfig.apiHost}/crm/v2/organizations`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            "page[number]": 1,
+            "page[size]": 1,
+            filter: `@cnpj:"${Utils.cleanCNPJ(cnpj)}"`,
+          },
+        },
+      );
+      const id = response.data.data[0]?.id;
+      if (!id) return null;
+      return id;
+    } catch (error) {
+      console.error("Error fetching organization by CNPJ:", error);
+      return null;
     }
   }
 }

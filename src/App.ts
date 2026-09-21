@@ -1,6 +1,7 @@
 import type { ICarts } from "./interfaces/interfaces.js";
 import { logger } from "./utils/logger.js";
 import CartsController from "./controllers/CartsController.js";
+import RdController from "./controllers/rdController.js";
 import { appConfig } from "./config/appConfig.js";
 import Error from "./errors/Error.js";
 
@@ -205,6 +206,36 @@ class App {
     }
   }
 
+  // Salva / Atualiza carrinhos na RdStation
+  async saveCartsToRdStation(carts: ICarts[]): Promise<void> {
+    // Pega o token de acesso da RdStation
+    const tokenResponse = await RdController.getRdAccessToken();
+    if (!tokenResponse.success) {
+      logger.error("Failed to get RD Access Token");
+      const error = new Error(
+        "Erro ao obter token de acesso",
+        tokenResponse.error,
+      );
+      error.sendError();
+      return;
+    }
+    const token = tokenResponse.data.data;
+    for (const cart of carts) {
+      // Pega a organização pelo cnpj do cliente
+      const organizationResponse = await RdController.getOrganizationByCnpj(
+        cart.customer_cnpj,
+        token,
+      );
+      console.log(organizationResponse.data);
+      // Se a organização não existir passa para a próxima
+      if (!organizationResponse.success) {
+        continue;
+      }
+
+      // Se a organização existir salva o carrinho na RdStation
+    }
+  }
+
   async clearDatabase(): Promise<void> {
     const response = await CartsController.clearDatabase();
     if (!response.success) {
@@ -270,6 +301,13 @@ class App {
       logger.info("Nenhum carrinho para processar. Encerrando processo.");
       return;
     }
+
+    // Salva os carrinhos na RdStation
+    await this.saveCartsToRdStation(cartsToProcess);
+    logger.info(
+      `Total de carrinhos salvos na RdStation: ${cartsToProcess.length}`,
+    );
+    return;
 
     // Salva os carrinhos no banco de dados
     const saveResponse = await this.saveCartsToDatabase(cartsToProcess);
