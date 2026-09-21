@@ -135,8 +135,10 @@ export default class RdService {
         },
       });
       const id = response.data.data[0]?.id;
-      if (!id) return null;
-      return id;
+      const ownerId = response.data.data[0]?.owner_id;
+
+      if (!id || !ownerId) return null;
+      return id + "|" + ownerId;
     } catch (error) {
       console.error("Error fetching deal by organization ID:", error);
       return null;
@@ -167,6 +169,39 @@ export default class RdService {
       return response.data;
     } catch (error) {
       console.error("Error updating deal:", error);
+      throw error;
+    }
+  }
+
+  static async createTask(dealId: string, ownerId: string, token: string) {
+    try {
+      const dueDate = new Date();
+      dueDate.setMinutes(dueDate.getMinutes() + 30);
+      const body = {
+        data: {
+          name: "Acompanhamento Carrinho Abandonado",
+          status: "open",
+          type: "call",
+          due_date: dueDate.toISOString(),
+          created_by_id: rdConfig.ownerId,
+          deal_id: dealId,
+          owner_ids: [ownerId],
+        },
+      };
+      const response = await axios.post(
+        `${rdConfig.apiHost}/crm/v2/tasks`,
+        body,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error creating task:", error);
       throw error;
     }
   }

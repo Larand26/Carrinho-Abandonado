@@ -244,9 +244,19 @@ class App {
         continue;
       }
 
+      const [dealId, ownerId] = dealResponse.data.split("|");
+
       // Atualiza a negociação para carrinho abandonado
-      const updateResponse = await RdController.updateDeal(
-        dealResponse.data,
+      const updateResponse = await RdController.updateDeal(dealId, token);
+
+      if (!updateResponse.success) {
+        continue;
+      }
+
+      // Cria a tarefa para a negociação
+      const taskResponse = await RdController.createTask(
+        dealId,
+        ownerId,
         token,
       );
     }

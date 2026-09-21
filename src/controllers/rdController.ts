@@ -86,4 +86,27 @@ export default class RdController {
       };
     }
   }
+
+  static async createTask(
+    dealId: string,
+    ownerId: string,
+    token: string,
+  ): Promise<IResponse> {
+    try {
+      const response = await RdService.createTask(dealId, ownerId, token);
+      return {
+        success: true,
+        message: "Task created successfully",
+        data: response,
+        error: null,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: "Error creating task",
+        data: null,
+        error: error,
+      };
+    }
+  }
 }
