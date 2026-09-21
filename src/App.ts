@@ -239,7 +239,16 @@ class App {
         token,
       );
 
+      // Se a negociação não existir passa para a próxima
+      if (!dealResponse.success || !dealResponse.data) {
+        continue;
+      }
+
       // Atualiza a negociação para carrinho abandonado
+      const updateResponse = await RdController.updateDeal(
+        dealResponse.data,
+        token,
+      );
     }
   }
 

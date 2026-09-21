@@ -67,4 +67,23 @@ export default class RdController {
       };
     }
   }
+
+  static async updateDeal(dealId: string, token: string): Promise<IResponse> {
+    try {
+      await RdService.updateDeal(dealId, token);
+      return {
+        success: true,
+        message: "Deal updated successfully",
+        data: null,
+        error: null,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: "Error updating deal",
+        data: null,
+        error: error,
+      };
+    }
+  }
 }

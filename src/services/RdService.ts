@@ -142,4 +142,32 @@ export default class RdService {
       return null;
     }
   }
+
+  static async updateDeal(dealId: string, token: string) {
+    try {
+      const body = {
+        data: {
+          name: "Carrinho Abandonado",
+          stage_id: rdConfig.dealStageId,
+        },
+      };
+
+      const response = await axios.put(
+        `${rdConfig.apiHost}/crm/v2/deals/${dealId}`,
+        body,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error("Error updating deal:", error);
+      throw error;
+    }
+  }
 }
