@@ -333,7 +333,6 @@ class App {
     logger.info(
       `Total de carrinhos salvos na RdStation: ${cartsToProcess.length}`,
     );
-    return;
 
     // Salva os carrinhos no banco de dados
     const saveResponse = await this.saveCartsToDatabase(cartsToProcess);
