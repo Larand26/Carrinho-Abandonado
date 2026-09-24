@@ -156,7 +156,7 @@ abstract class CartsService {
         cart.customer_cnpj,
         cart.updated_at,
       ]);
-      const query = `INSERT INTO carts (cart_id, customer_id, customer_name, customer_cnpj, update_at) VALUES ? ON DUPLICATE KEY UPDATE update_at = VALUES(update_at)`;
+      const query = `INSERT INTO carts (cart_id, customer_id, customer_name, customer_cnpj, updated_at) VALUES ? ON DUPLICATE KEY UPDATE updated_at = VALUES(updated_at)`;
       const [result] = await MySql.query(query, [values]);
       logger.success(
         `saveCartsToDatabase: ${(result as any)?.affectedRows ?? 0} linhas afetadas`,
