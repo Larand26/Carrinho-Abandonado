@@ -113,7 +113,6 @@ export default class RdService {
       if (!id) return null;
       return id;
     } catch (error) {
-      console.error("Error fetching organization by CNPJ:", error);
       return null;
     }
   }
