@@ -1,8 +1,9 @@
 import App from "./App.js";
 import nodeCron from "node-cron";
+import { appConfig } from "./config/appConfig.js";
 const app = new App();
 
-nodeCron.schedule("0 10,12,14,16,18 * * *", async () => {
+nodeCron.schedule(appConfig.intervalCron, async () => {
   app.start();
 });
 
