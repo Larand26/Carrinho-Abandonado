@@ -213,6 +213,7 @@ abstract class CartsService {
       >(`${apiConfig.apiUrl}/api/get-client/${cleanedCnpj}`, {
         headers: {
           Authorization: `Bearer ${apiConfig.apiToken}`,
+          "Content-Type": "application/json",
         },
       });
 
